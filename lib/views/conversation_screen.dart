@@ -66,11 +66,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   scrollToBottom() {
-    chatScrollController.animateTo(
-      chatScrollController.position.maxScrollExtent + MediaQuery.of(context).viewInsets.bottom,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 500),
-    );
+    if (chatScrollController.hasClients)
+      chatScrollController.animateTo(
+        chatScrollController.position.maxScrollExtent + MediaQuery.of(context).viewInsets.bottom,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 500),
+      );
   }
 
   @override

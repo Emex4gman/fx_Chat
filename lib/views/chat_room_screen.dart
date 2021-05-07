@@ -45,7 +45,7 @@ class _ChatRoomState extends State<ChatRoom> {
                           context,
                           MaterialPageRoute(
                             builder: (contex) => ConversationScreen(
-                              chatRoomId: snapShot.data.docs[index].get("name"),
+                              chatRoomId: snapShot.data.docs[index].get("chatroomId"),
                             ),
                           ),
                         );

@@ -39,18 +39,21 @@ class _SearchScreenState extends State<SearchScreen> {
         : Container();
   }
 
-  createChatroom(String username, String myName) async {
-    String chatRoomId = '${username}_$myName';
-    List<String> users = [username, myName];
-    Map<String, dynamic> chatRoomMap = {'users': users, "chatroomId": chatRoomId};
-    await _dataBaseService.createChatRoom(chatRoomId, chatRoomMap);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (ctx) => ConversationScreen(
-                  chatRoomId: chatRoomId,
-                )));
-  }
+  // createChatroom(String username, String myName) async {
+  //   String chatRoomId = '${username}_$myName';
+  //   List<String> users = [username, myName];
+  //   Map<String, dynamic> chatRoomMap = {'users': users, "chatroomId": chatRoomId};
+
+  //   await _dataBaseService.createChatRoom(chatRoomId, chatRoomMap);
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (ctx) => ConversationScreen(
+  //         chatRoomId: chatRoomId,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   void initState() {
@@ -116,18 +119,20 @@ class SearchTile extends StatelessWidget {
   SearchTile({this.userName = "", this.email = ""});
   final DataBaseService _dataBaseService = DataBaseService();
 
-  createChatroom({BuildContext context, String userName, String myName}) async {
+  _createChatroom({BuildContext context, String userName, String myName}) async {
     String chatRoomId = '${userName}_$myName';
     if (myName != userName) {
       List<String> users = [userName, myName];
       Map<String, dynamic> chatRoomMap = {'users': users, "chatroomId": chatRoomId};
       _dataBaseService.createChatRoom(chatRoomId, chatRoomMap);
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (ctx) => ConversationScreen(
-                    chatRoomId: chatRoomId,
-                  )));
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => ConversationScreen(
+            chatRoomId: chatRoomId,
+          ),
+        ),
+      );
     }
   }
 
@@ -155,7 +160,7 @@ class SearchTile extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 String myName = await StateManager().getUserUserName();
-                createChatroom(context: context, myName: myName, userName: userName);
+                _createChatroom(context: context, myName: myName, userName: userName);
               },
               child: Container(
                 alignment: Alignment.center,

@@ -15,8 +15,8 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   StateManager stateManager = StateManager();
-  TextEditingController emailCtr = new TextEditingController();
-  TextEditingController passwordCtr = new TextEditingController();
+  TextEditingController emailCtr = new TextEditingController(text: "emex4gman3@gmail.com");
+  TextEditingController passwordCtr = new TextEditingController(text: "1234567890");
   bool isLoading = false;
 
   final DataBaseService dataBaseService = DataBaseService();
@@ -42,7 +42,7 @@ class _SignInState extends State<SignIn> {
         QuerySnapshot snapshot = await dataBaseService.getUserByEmail(emailCtr.text.trim());
 
         await stateManager.saveUserEmail(emailCtr.text.trim());
-        await stateManager.saveUserUserName(snapshot.docs.last.data.toString());
+        await stateManager.saveUserUserName(snapshot.docs.last.get("name"));
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChatRoom()));
       }
     }

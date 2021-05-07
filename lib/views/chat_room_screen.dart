@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fxchat/components/widgets.dart';
 import 'package:fxchat/helper/authenticate.dart';
@@ -16,10 +17,10 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   StateManager stateManager = StateManager();
   DataBaseService dataBaseService = DataBaseService();
-  Stream userChatRoomStream;
+  Stream<QuerySnapshot> userChatRoomStream;
   loadChatRoom() async {
     String userName = await stateManager.getUserUserName();
-    userChatRoomStream = await dataBaseService.getchatRoomsByUser(userName);
+    userChatRoomStream = dataBaseService.getchatRoomsByUser(userName);
     setState(() {});
   }
 
@@ -27,17 +28,16 @@ class _ChatRoomState extends State<ChatRoom> {
     final AuthService authService = AuthService();
     await stateManager.saveUserIsloggedin(false);
     await authService.signout();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Authenticate()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Authenticate()));
   }
 
   Widget chatRoomList() {
-    return StreamBuilder(
+    return StreamBuilder<QuerySnapshot>(
         stream: userChatRoomStream,
         builder: (contex, snapShot) {
           return snapShot.hasData
               ? ListView.builder(
-                  itemCount: snapShot.data.documents.length,
+                  itemCount: snapShot.data.docs.length,
                   itemBuilder: (contex, index) {
                     return GestureDetector(
                       onTap: () {
@@ -45,18 +45,13 @@ class _ChatRoomState extends State<ChatRoom> {
                           context,
                           MaterialPageRoute(
                             builder: (contex) => ConversationScreen(
-                              chatRoomId: snapShot
-                                  .data.documents[index].data['chatroomId'],
+                              chatRoomId: snapShot.data.docs[index].get("name"),
                             ),
                           ),
                         );
                       },
                       child: ChatRoomTile(
-                        otherUsername: snapShot
-                            .data.documents[index].data['chatroomId']
-                            .toString()
-                            .replaceAll('_', "")
-                            .replaceAll(stateManager.myname, ''),
+                        otherUsername: snapShot.data.docs[index].get('chatroomId').toString().replaceAll('_', "").replaceAll(stateManager.myname, ''),
                       ),
                     );
                   },
@@ -90,8 +85,7 @@ class _ChatRoomState extends State<ChatRoom> {
       body: chatRoomList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (cxt) => SearchScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (cxt) => SearchScreen()));
         },
         child: Icon(Icons.search),
       ),
@@ -119,9 +113,7 @@ class ChatRoomTile extends StatelessWidget {
                     style: mediumTextStyle(),
                   ),
                 ),
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(60))),
+                decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(60))),
             SizedBox(width: 8),
             Text(
               '$otherUsername',

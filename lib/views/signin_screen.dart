@@ -39,14 +39,11 @@ class _SignInState extends State<SignIn> {
 
       if (result != null) {
         await stateManager.saveUserIsloggedin(true);
-        QuerySnapshot snapshot =
-            await dataBaseService.getUserByEmail(emailCtr.text.trim());
+        QuerySnapshot snapshot = await dataBaseService.getUserByEmail(emailCtr.text.trim());
 
         await stateManager.saveUserEmail(emailCtr.text.trim());
-        await stateManager
-            .saveUserUserName(snapshot.documents.last.data['name']);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ChatRoom()));
+        await stateManager.saveUserUserName(snapshot.docs.last.data.toString());
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChatRoom()));
       }
     }
   }
@@ -74,11 +71,7 @@ class _SignInState extends State<SignIn> {
                             TextFormField(
                               controller: emailCtr,
                               validator: (value) {
-                                return RegExp(
-                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                        .hasMatch(value)
-                                    ? null
-                                    : "Enter correct email";
+                                return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value) ? null : "Enter correct email";
                               },
                               decoration: textFieldDecoration("email"),
                               style: simpleTextStyle(),
@@ -86,9 +79,7 @@ class _SignInState extends State<SignIn> {
                             TextFormField(
                               controller: passwordCtr,
                               validator: (val) {
-                                return val.length < 6
-                                    ? "Enter Password 6+ characters"
-                                    : null;
+                                return val.length < 6 ? "Enter Password 6+ characters" : null;
                               },
                               decoration: textFieldDecoration('password'),
                               style: simpleTextStyle(),
@@ -96,8 +87,7 @@ class _SignInState extends State<SignIn> {
                             SizedBox(height: 8),
                             Container(
                               alignment: Alignment.centerRight,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 15),
+                              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                               child: Text(
                                 "Forgot Pasword ?",
                                 style: simpleTextStyle(),
@@ -132,9 +122,7 @@ class _SignInState extends State<SignIn> {
                     Container(
                       alignment: Alignment.center,
                       width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.white),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Colors.white),
                       padding: EdgeInsets.symmetric(
                         vertical: 20,
                       ),

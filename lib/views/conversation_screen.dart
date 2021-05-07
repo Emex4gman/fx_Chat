@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fxchat/components/widgets.dart';
 import 'package:fxchat/services/db.dart';
@@ -25,13 +26,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   getConversation() async {
     setState(() {
-      chatMessageStream =
-          dataBaseService.getConversationMessages(widget.chatRoomId);
+      chatMessageStream = dataBaseService.getConversationMessages(widget.chatRoomId);
     });
   }
 
   Widget chatList() {
-    return StreamBuilder(
+    return StreamBuilder<QuerySnapshot>(
         stream: chatMessageStream,
         builder: (context, snapShot) {
           return snapShot.hasData
@@ -39,15 +39,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   controller: chatScrollController,
                   // reverse: true,
                   shrinkWrap: true,
-                  itemCount: snapShot.data.documents.length,
+                  itemCount: snapShot.data.docs.length,
                   itemBuilder: (context, index) {
                     return MessageTile(
-                      message: snapShot.data.documents[index].data['message'],
-                      isSentByMe:
-                          snapShot.data.documents[index].data['sentBy'] ==
-                                  StateManager().myname
-                              ? true
-                              : false,
+                      message: snapShot.data.docs[index].get('message'),
+                      isSentByMe: snapShot.data.docs[index].get('sentBy') == StateManager().myname ? true : false,
                     );
                   },
                 )
@@ -58,11 +54,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   sendMessage() async {
     String myName = await StateManager().getUserUserName();
     if (messageCtr.text.isNotEmpty) {
-      Map<String, dynamic> message = {
-        "message": messageCtr.text.trim(),
-        "sentBy": myName,
-        "time": DateTime.now().millisecondsSinceEpoch
-      };
+      Map<String, dynamic> message = {"message": messageCtr.text.trim(), "sentBy": myName, "time": DateTime.now().millisecondsSinceEpoch};
       await dataBaseService.sendConversationMessage(widget.chatRoomId, message);
       setState(() {
         messageCtr.text = "";
@@ -75,8 +67,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   scrollToBottom() {
     chatScrollController.animateTo(
-      chatScrollController.position.maxScrollExtent +
-          MediaQuery.of(context).viewInsets.bottom,
+      chatScrollController.position.maxScrollExtent + MediaQuery.of(context).viewInsets.bottom,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 500),
     );
@@ -112,13 +103,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   Expanded(
                       child: TextFormField(
                     controller: messageCtr,
-                    decoration: InputDecoration(
-                        hintText: "message...",
-                        focusedBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        enabledBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        hintStyle: TextStyle(color: Colors.white54)),
+                    decoration: InputDecoration(hintText: "message...", focusedBorder: UnderlineInputBorder(borderSide: BorderSide.none), enabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), hintStyle: TextStyle(color: Colors.white54)),
                     style: simpleTextStyle(),
                   )),
                   GestureDetector(
@@ -191,8 +176,7 @@ class MessageTile extends StatelessWidget {
                     topRight: Radius.circular(15),
                   ),
           ),
-          child: Text(message,
-              style: TextStyle(color: Colors.white, fontSize: 14)),
+          child: Text(message, style: TextStyle(color: Colors.white, fontSize: 14)),
         ),
       ),
     );

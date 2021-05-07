@@ -17,8 +17,7 @@ class _SearchScreenState extends State<SearchScreen> {
   // List searchResultlist = [];
   QuerySnapshot querySnapshot;
   void search() async {
-    QuerySnapshot data =
-        await _dataBaseService.getUserByUsername(sreachCtr.text.trim());
+    QuerySnapshot data = await _dataBaseService.getUserByUsername(sreachCtr.text.trim());
     setState(() {
       querySnapshot = data;
     });
@@ -29,11 +28,11 @@ class _SearchScreenState extends State<SearchScreen> {
     return querySnapshot != null
         ? ListView.builder(
             shrinkWrap: true,
-            itemCount: querySnapshot.documents.length,
+            itemCount: querySnapshot.docs.length,
             itemBuilder: (context, index) {
               return SearchTile(
-                email: querySnapshot.documents[index].data['email'],
-                userName: querySnapshot.documents[index].data['name'],
+                email: querySnapshot.docs[index].data(),
+                userName: querySnapshot.docs[index].data(),
               );
             },
           )
@@ -43,10 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
   createChatroom(String username, String myName) async {
     String chatRoomId = '${username}_$myName';
     List<String> users = [username, myName];
-    Map<String, dynamic> chatRoomMap = {
-      'users': users,
-      "chatroomId": chatRoomId
-    };
+    Map<String, dynamic> chatRoomMap = {'users': users, "chatroomId": chatRoomId};
     await _dataBaseService.createChatRoom(chatRoomId, chatRoomMap);
     Navigator.push(
         context,
@@ -76,13 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   Expanded(
                       child: TextFormField(
                     controller: sreachCtr,
-                    decoration: InputDecoration(
-                        hintText: "enter username",
-                        focusedBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        enabledBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        hintStyle: TextStyle(color: Colors.white54)),
+                    decoration: InputDecoration(hintText: "enter username", focusedBorder: UnderlineInputBorder(borderSide: BorderSide.none), enabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), hintStyle: TextStyle(color: Colors.white54)),
                     style: simpleTextStyle(),
                   )),
                   GestureDetector(
@@ -130,10 +120,7 @@ class SearchTile extends StatelessWidget {
     String chatRoomId = '${userName}_$myName';
     if (myName != userName) {
       List<String> users = [userName, myName];
-      Map<String, dynamic> chatRoomMap = {
-        'users': users,
-        "chatroomId": chatRoomId
-      };
+      Map<String, dynamic> chatRoomMap = {'users': users, "chatroomId": chatRoomId};
       _dataBaseService.createChatRoom(chatRoomId, chatRoomMap);
       Navigator.push(
           context,
@@ -168,8 +155,7 @@ class SearchTile extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 String myName = await StateManager().getUserUserName();
-                createChatroom(
-                    context: context, myName: myName, userName: userName);
+                createChatroom(context: context, myName: myName, userName: userName);
               },
               child: Container(
                 alignment: Alignment.center,

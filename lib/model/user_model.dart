@@ -1,9 +1,9 @@
-class User {
-  String userId;
-  // String name;
-  // String imageUrl;
-  User({this.userId});
-}
+// class User {
+//   String userId;
+//   // String name;
+//   // String imageUrl;
+//   User({this.userId});
+// }
 
 class Category {
   String name;

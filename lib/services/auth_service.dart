@@ -12,16 +12,16 @@ abstract class BaseAuth {
 
 class AuthService implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  User _userFormFirebaseUser(FirebaseUser firebaseUser) {
-    return firebaseUser != null ? new User(userId: firebaseUser.uid) : null;
+  User _userFormFirebaseUser(UserCredential firebaseUser) {
+    return firebaseUser.user ;
   }
 
   //sigin anon
   Future signInAnon() async {
     try {
-      AuthResult authResult = await _firebaseAuth.signInAnonymously();
-      FirebaseUser firebaseUser = authResult.user;
-      return _userFormFirebaseUser(firebaseUser);
+      UserCredential authResult = await _firebaseAuth.signInAnonymously();
+      User firebaseUser = authResult.user;
+      return _userFormFirebaseUser(authResult);
     } catch (e) {
       print(e.toString());
       return null;
@@ -31,11 +31,10 @@ class AuthService implements BaseAuth {
   @override
   Future signinWithEmailandPassowrd(String email, String password) async {
     try {
-      AuthResult authResult = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential authResult = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
 
-      FirebaseUser firebaseUser = authResult.user;
-      return _userFormFirebaseUser(firebaseUser);
+      User firebaseUser = authResult.user;
+      return _userFormFirebaseUser(authResult);
     } catch (e) {
       print(e);
     }
@@ -55,14 +54,12 @@ class AuthService implements BaseAuth {
   }
 
   @override
-  Future signUpWithEmailandPassowrd(
-      String email, String password, String userName) async {
+  Future signUpWithEmailandPassowrd(String email, String password, String userName) async {
     try {
-      AuthResult authResult = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseUser firebaseUser = authResult.user;
+      UserCredential authResult = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      User firebaseUser = authResult.user;
 
-      return _userFormFirebaseUser(firebaseUser);
+      return _userFormFirebaseUser(authResult);
     } catch (e) {
       print(e.toString());
       return null;

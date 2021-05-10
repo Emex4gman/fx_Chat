@@ -62,6 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _dataBaseService.getAllChanels();
     return Scaffold(
       appBar: appBarMain(context),
       body: SingleChildScrollView(

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DataBaseService {
@@ -28,5 +29,18 @@ class DataBaseService {
 
   Stream<QuerySnapshot> getchatRoomsByUser(String userName) {
     return FirebaseFirestore.instance.collection('ChatRoom').where('users', arrayContains: userName).snapshots();
+  }
+
+  void getAllChanels() async {
+    var re = await FirebaseFirestore.instance.collection('channels').get();
+    // var id = await FirebaseFirestore.instance.collection('channels').add({
+    //   "members": ["GAGG", 'casaca'],
+    //   "title": "HOW WAS THE GAME",
+    //   "created": Timestamp.now()
+    // });
+    // log(id.id.toString());
+    re.docs.forEach((e) {
+      log(e.data().toString());
+    });
   }
 }
